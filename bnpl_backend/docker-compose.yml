@@ -1,0 +1,54 @@
+services:
+  web:
+    build: .
+    command: gunicorn bnpl_backend_project.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/code
+      - static_volume:/code/staticfiles
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_DB: bnpl
+      POSTGRES_USER: bnpl
+      POSTGRES_PASSWORD: bnpl
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:8
+    ports:
+      - "6379:6379"
+
+  celery:
+    build: .
+    command: celery -A bnpl_backend_project worker -l info
+    volumes:
+      - .:/code
+    env_file:
+      - .env
+    depends_on:
+      - web
+      - redis
+
+  celery-beat:
+    build: .
+    command: celery -A bnpl_backend_project beat -l info
+    volumes:
+      - .:/code
+    env_file:
+      - .env
+    depends_on:
+      - web
+      - redis
+
+volumes:
+  static_volume:
