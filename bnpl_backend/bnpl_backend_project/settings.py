@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from django.contrib import staticfiles
 from dotenv import load_dotenv
 from datetime import timedelta
 from celery.schedules import crontab
@@ -85,6 +86,8 @@ DATABASES = {
 
 # Celery
 REDIS_URL = os.getenv('REDIS_URL')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
 
@@ -92,7 +95,15 @@ CELERY_BEAT_SCHEDULE = {
     'send_due_reminders': {
         'task': 'apps.notifications.tasks.send_due_soon_reminders',
         'schedule': crontab(hour=0, minute=0),  # Every midnight
-    }
+    },
+    'auto_mark_late_installments': {
+        'task': 'apps.notifications.tasks.auto_mark_late_installments',
+        'schedule': crontab(hour=1, minute=0),  # Every day at 1 AM
+    },
+    'send_overdue_reminders': {
+        'task': 'apps.notifications.tasks.send_overdue_reminders',
+        'schedule': crontab(hour=2, minute=0),  # Every day at 2 AM
+    },
 }
 
 # Password validation
@@ -149,6 +160,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

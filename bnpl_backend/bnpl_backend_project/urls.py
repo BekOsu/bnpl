@@ -37,9 +37,9 @@ urlpatterns = [
     path("api/token/refresh/", TokenRefreshView.as_view(),
          name="token_refresh"),
     path("api/auth/", include("apps.accounts.urls")),
-    # path("api/plans/", include("apps.plans.urls")),
-    # path("api/analytics/", include("apps.analytics.urls")),
-    # path("api/notifications/", include("apps.notifications.urls")),
+    path("api/plans/", include("apps.plans.urls")),
+    path("api/analytics/", include("apps.analytics.urls")),
+    path("api/notifications/", include("apps.notifications.urls")),
 ]
 
 if settings.DEBUG:
