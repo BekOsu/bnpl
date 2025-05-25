@@ -33,7 +33,12 @@ class PaymentPlanViewSet(viewsets.ModelViewSet):
         return [perm() for perm in permission_classes]
 
     def get_queryset(self):
+        # Allow Swagger and unauthenticated access to pass safely
+        if getattr(self, "swagger_fake_view", False):
+            return PaymentPlan.objects.none()
         user = self.request.user
+        if not user.is_authenticated:
+            return PaymentPlan.objects.none()
         if user.role == 'merchant':
             return PaymentPlan.objects.filter(merchant=user)
         elif user.role == 'customer':
@@ -49,7 +54,12 @@ class InstallmentViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = InstallmentSerializer
 
     def get_queryset(self):
+        # Allow Swagger and unauthenticated access to pass safely
+        if getattr(self, "swagger_fake_view", False):
+            return Installment.objects.none()
         user = self.request.user
+        if not user.is_authenticated:
+            return Installment.objects.none()
         if user.role == 'merchant':
             return Installment.objects.filter(plan__merchant=user)
         elif user.role == 'customer':
