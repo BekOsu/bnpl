@@ -82,6 +82,15 @@ services:
       - web
       - redis
 
+  frontend:
+    build:
+      context: ../bnpl-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - web
+
 volumes:
   static_volume:
   postgres_data:

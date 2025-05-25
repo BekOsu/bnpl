@@ -1,0 +1,16 @@
+# Python / Django
+.env
+env/
+*.pyc
+__pycache__/
+db.sqlite3
+
+# Node / Frontend
+node_modules/
+dist/
+.vite/
+.env.local
+
+# OS / Misc
+.DS_Store
+*.zip
