@@ -1,16 +1,59 @@
 # Python cache
 __pycache__/
-*.pyc
+*.py[cod]
+*.so
+*.pyo
 
-# Env files & venv
+# Bytecode / compiled extensions
+*.egg-info/
+*.egg
+*.whl
+
+# Environment & Secrets
 .env
+.env.*
+*.env
+*.secret
+*.pem
+*.key
+*.crt
+*.db
+
+# Python virtualenv
 .venv/
+venv/
+ENV/
+
+# Docker
+.dockerignore
+Dockerfile
 
 # Git
-.git
+.git/
 .gitignore
 
-# IDE
+# IDE/Editor files
 .vscode/
 .idea/
+*.swp
+*.swo
+*.bak
 
+# Tests / coverage
+htmlcov/
+.coverage
+coverage.xml
+.cache
+pytest_cache/
+
+# Logs
+*.log
+
+# Output / temp folders
+build/
+dist/
+staticfiles/
+media/
+tmp/
+celerybeat-schedule.db
+celerybeat-schedule/

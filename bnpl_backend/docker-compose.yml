@@ -1,14 +1,21 @@
 services:
   web:
     build: .
-    command: gunicorn bnpl_backend_project.wsgi:application --bind 0.0.0.0:8000
+    command: >
+      bash -c "
+        ./wait-for-it.sh db:5432 --timeout=60 --strict -- echo 'Postgres is up';
+        python manage.py migrate &&
+        python create_superuser.py &&
+        python manage.py collectstatic --noinput &&
+        gunicorn bnpl_backend_project.wsgi:application --bind 0.0.0.0:8000
+      "
     volumes:
       - .:/code
       - static_volume:/code/staticfiles
     ports:
       - "8000:8000"
     env_file:
-      - .env
+      - .env.prod
     depends_on:
       - db
       - redis
@@ -22,33 +29,61 @@ services:
       POSTGRES_PASSWORD: bnpl
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bnpl"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
     image: redis:8
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   celery:
     build: .
-    command: celery -A bnpl_backend_project worker -l info
+    command: >
+      bash -c "
+        ./wait-for-it.sh db:5432 --timeout=60 --strict -- echo 'Postgres is up';
+        ./wait-for-it.sh redis:6379 --timeout=60 --strict -- echo 'Redis is up';
+        celery -A bnpl_backend_project worker -l info
+      "
     volumes:
       - .:/code
     env_file:
-      - .env
+      - .env.prod
     depends_on:
       - web
       - redis
 
   celery-beat:
     build: .
-    command: celery -A bnpl_backend_project beat -l info
+    command: >
+      bash -c "
+        ./wait-for-it.sh db:5432 --timeout=60 --strict -- echo 'Postgres is up';
+        ./wait-for-it.sh redis:6379 --timeout=60 --strict -- echo 'Redis is up';
+        celery -A bnpl_backend_project beat --schedule /code/celerybeat_data/celerybeat-schedule.db -l info
+      "
     volumes:
       - .:/code
+      - beat_schedule:/code/celerybeat_data
     env_file:
-      - .env
+      - .env.prod
     depends_on:
       - web
       - redis
 
 volumes:
   static_volume:
+  postgres_data:
+  redis_data:
+  beat_schedule:
