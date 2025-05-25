@@ -9,6 +9,7 @@ from .models import Installment, PaymentPlan
 
 User = get_user_model()
 
+
 class InstallmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Installment
@@ -19,6 +20,7 @@ class InstallmentSerializer(serializers.ModelSerializer):
         if instance.status == 'paid':
             raise serializers.ValidationError("Paid installments cannot be edited.")
         return super().update(instance, validated_data)
+
 
 class PaymentPlanSerializer(serializers.ModelSerializer):
     installments = InstallmentSerializer(many=True, read_only=True)
@@ -55,7 +57,8 @@ class PaymentPlanSerializer(serializers.ModelSerializer):
                 "customer_email": "No customer with that email."
             })
 
-        merchant = self.context["request"].user
+        merchant = validated_data.pop("merchant")
+
         total = Decimal(validated_data["total_amount"])
         n = validated_data["num_installments"]
         start_date = validated_data["start_date"]
@@ -75,6 +78,7 @@ class PaymentPlanSerializer(serializers.ModelSerializer):
                 Installment.objects.create(plan=plan, amount=amounts[i], due_date=due)
 
         return plan
+
 
 class InstallmentPaySerializer(serializers.ModelSerializer):
     class Meta:
