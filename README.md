@@ -45,4 +45,10 @@ A complete **Buy Now Pay Later (BNPL)** web application built with a modern stac
 | Async      | Celery + Redis                       |
 | DevOps     | Docker + Docker Compose              |
 
+## 🐳 Docker (Full Stack)
+
+# From project root (aajil_project/)
+```bash
+docker-compose up --build
+```
 
