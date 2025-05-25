@@ -52,3 +52,12 @@ A complete **Buy Now Pay Later (BNPL)** web application built with a modern stac
 docker-compose up --build
 ```
 
+# This launches:
+Django API on :8000
+
+React frontend served via Nginx on :3000
+
+PostgreSQL, Redis, Celery worker, Celery beat
+
+⚠️ Make sure .env.prod is configured before Docker build.
+
