@@ -93,20 +93,21 @@ make test # Run tests
 
 ## 🔗 API Endpoints
 ```bash
--- Method	Endpoint	                                   Description
-User_Authentication:
-POST	 /auth/register/	                         Register user (merchant/customer).
-POST	 /token/	                                 Login → Get JWT access/refresh tokens.
-GET	     /auth/me/	                                 Fetch user profile.
-Payment_Plans:
-POST	 /api/plans/	                             Create BNPL plan (merchant only).
-GET	     /api/plans/	                             List user/merchant plans.
-GET	     /api/plans/{id}/	                         Get plan details.
-GET      /api/plans/installments/	                 List all installments(See upcoming payments).
-GET      /api/plans/{id}/installments/	             List installments for a plan.
-POST	 /api/plans/installments/{id}/pay/	         Pay a pending installment(Simulate payment).
-Analytics (Merchant Dashboard):
-GET	     /api/plans/analytics/dashboard/	         Returns total revenue, overdue count.                         
+| Method | Endpoint                                | Description                                   |
+|--------|----------------------------------------|-----------------------------------------------|
+| **User Authentication**                         |                                                |
+| POST   | /auth/register/                        | Register user (merchant/customer).            |
+| POST   | /token/                                | Login → Get JWT access/refresh tokens.        |
+| GET    | /auth/me/                              | Fetch user profile.                           |
+| **Payment Plans**                               |                                                |
+| POST   | /api/plans/                            | Create BNPL plan (merchant only).             |
+| GET    | /api/plans/                            | List user/merchant plans.                     |
+| GET    | /api/plans/{id}/                       | Get plan details.                             |
+| GET    | /api/plans/installments/               | List all installments (See upcoming payments).|
+| GET    | /api/plans/{id}/installments/          | List installments for a plan.                 |
+| POST   | /api/plans/installments/{id}/pay/      | Pay a pending installment (Simulate payment). |
+| **Analytics (Merchant Dashboard)**             |                                                |
+| GET    | /api/plans/analytics/                  | Returns total revenue, overdue count.         |                      
 ```
 ## 🔄 Background Tasks (Celery)
 
