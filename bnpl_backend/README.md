@@ -109,11 +109,42 @@ make test # Run tests
 | **Analytics (Merchant Dashboard)**             |                                                |
 | GET    | /api/plans/analytics/                  | Returns total revenue, overdue count.         |                      
 ```
+
+## ▶️ Usage Flow
+### User Authentication:
+```bash
+POST /auth/register/: Create user (with role = merchant or customer).
+POST /token/: Login → Get JWT access/refresh tokens.
+GET /auth/me/: Fetch profile (based on token).
+PATCH/PUT/DELETE: Manage your profile (admin/advanced cases).
+```
+### Payment Plans:
+````
+1- POST /plans/ (merchant):
+{
+  "total_amount": 1000,
+  "num_installments": 4,
+  "start_date": "2024-06-01",
+  "customer_email": "jane@example.com"
+}
+2- Backend creates 4 equal monthly Installments.
+3- GET /plans/: Customer sees their plans, Merchant sees theirs.
+4- GET /plans/{id}/: View full plan detail with installment breakdown.
+`````
+### Installments:
+```bash
+1- GET /plans/installments/: See upcoming payments.
+2- POST /plans/installments/{id}/pay/: Simulate payment.
+```
+
 ## 🔄 Background Tasks (Celery)
 
-Two tasks are defined in notifications/tasks.py:
+Three tasks are defined in notifications/tasks.py:
+
+auto_mark_late_installments() – Auto-marks late installments as paid.
 
 send_due_soon_reminders() – Logs reminders 3 days before due.
+
 send_overdue_reminders() – Logs and auto-marks overdue installments as paid.
 
 Note: Simulated via logger (no real email service used).

@@ -94,15 +94,18 @@ CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_BEAT_SCHEDULE = {
     'send_due_reminders': {
         'task': 'apps.notifications.tasks.send_due_soon_reminders',
-        'schedule': crontab(hour=0, minute=0),  # Every midnight
+        'schedule': crontab(minute='*/1'),  # every 1 minute
+        # 'schedule': crontab(hour=0, minute=0),  # Every midnight
     },
     'auto_mark_late_installments': {
         'task': 'apps.notifications.tasks.auto_mark_late_installments',
-        'schedule': crontab(hour=1, minute=0),  # Every day at 1 AM
+        'schedule': crontab(minute='*/1'),  # every 1 minute
+        # 'schedule': crontab(hour=1, minute=0),  # Every day at 1 AM
     },
     'send_overdue_reminders': {
         'task': 'apps.notifications.tasks.send_overdue_reminders',
-        'schedule': crontab(hour=2, minute=0),  # Every day at 2 AM
+        'schedule': crontab(minute='*/1'),  # every 1 minute
+        # 'schedule': crontab(hour=2, minute=0),  # Every day at 2 AM
     },
 }
 
