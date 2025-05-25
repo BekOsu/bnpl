@@ -73,6 +73,9 @@ Visit:
 http://localhost:8000
 Swagger docs: http://localhost:8000/api/docs/
 
+![BNPL Logo](swagger.png "Swagger Documentation")
+
+
 1. Run DB Migrations
 ```bash
 docker-compose exec web python manage.py migrate
