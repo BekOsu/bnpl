@@ -16,7 +16,7 @@ export interface AuthContextType {
   user: JwtPayload | null;
 
   /** full payload returned from GET /auth/me/ (contains role) */
-  profile: any | null;
+  profile: UserProfile | null;
 
   login:  (access: string, refresh: string) => Promise<void>;
   logout: () => void;

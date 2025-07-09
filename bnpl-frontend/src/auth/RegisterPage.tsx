@@ -30,8 +30,13 @@ const RegisterPage: React.FC = () => {
 
       toast.success("🎉 Registration successful! Please log in.");
       navigate("/login");
-    } catch (err: any) {
-      console.error("Registration error:", err.response?.data);
+    } catch (err: unknown) {
+      if (err && typeof err === "object" && "response" in err) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        console.error("Registration error:", (err as any).response?.data);
+      } else {
+        console.error("Registration error:", err);
+      }
       toast.error("❌ Registration failed. Try again.");
     }
   };
