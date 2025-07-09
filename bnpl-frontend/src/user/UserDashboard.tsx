@@ -131,7 +131,6 @@ interface TableProps {
 }
 
 function InstallmentTable({ data, onPay, loading }: TableProps) {
-  const today = new Date().toISOString().slice(0, 10);
 
   return (
     <table className="w-full text-sm border">

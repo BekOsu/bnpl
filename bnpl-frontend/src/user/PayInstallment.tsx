@@ -14,7 +14,7 @@ const PayInstallment: React.FC = () => {
       await api.post(`plans/installments/${id}/pay/`);
       setMsg("✅ Installment paid!");
       setTimeout(() => navigate("/user"), 1200);
-    } catch (e) {
+    } catch {
       setMsg("❌ Payment failed (already paid or not due).");
     }
   };
