@@ -10,7 +10,10 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+# Provide a fallback secret key so tests can run without needing
+# environment variables configured. This should be overridden in
+# production via the DJANGO_SECRET_KEY environment variable.
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'test-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DJANGO_DEBUG') == 'True'
@@ -73,16 +76,25 @@ WSGI_APPLICATION = 'bnpl_backend_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'bnpl'),
-        'USER': os.getenv('POSTGRES_USER', 'bnpl'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'bnpl'),
-        'HOST': os.getenv('POSTGRES_HOST', 'db'),
-        'PORT': os.getenv('POSTGRES_PORT', '5432'),
+POSTGRES_HOST = os.getenv('POSTGRES_HOST')
+if POSTGRES_HOST:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': os.getenv('POSTGRES_DB', 'bnpl'),
+            'USER': os.getenv('POSTGRES_USER', 'bnpl'),
+            'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'bnpl'),
+            'HOST': POSTGRES_HOST,
+            'PORT': os.getenv('POSTGRES_PORT', '5432'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 # Celery
 REDIS_URL = os.getenv('REDIS_URL')
